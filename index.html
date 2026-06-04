@@ -3,184 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Les eBooks de Boris</title>
+    <title>BPROD | Bibliothèque Privée</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f4f6f8;
-            --text-color: #2c3e50;
-            --btn-bg: #2c3e50;
-            --btn-text: #ffffff;
+            --bg: #12100E;
+            --surface: #1A1715;
+            --text: #EAE0D5;
+            --muted: #8A817C;
+            --gold: #C8A97E;
+            --border: #2A2522;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
-            padding: 40px 20px;
-            box-sizing: border-box;
+            max-width: 500px;
+            padding: 50px 25px;
             text-align: center;
         }
 
-        .profile-img {
-            width: 100px;
-            height: 100px;
+        .logo {
+            width: 90px; height: 90px;
             border-radius: 50%;
-            background-color: #bdc3c7;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--surface), var(--bg));
+            border: 1px solid var(--border);
+            margin: 0 auto 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 20px; font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 2px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        p.bio {
-            font-size: 15px;
-            color: #7f8c8d;
-            margin-bottom: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px; font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-bottom: 50px;
         }
 
         .loading {
-            font-size: 15px;
-            color: #95a5a6;
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: var(--gold);
             font-style: italic;
+            animation: pulse 2s infinite;
         }
 
-        /* Animation d'apparition des boutons */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .ebook-link {
-            display: block;
+        .ebook-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             width: 100%;
-            padding: 18px;
-            margin-bottom: 15px;
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
+            padding: 20px 25px;
+            margin-bottom: 16px;
+            background: var(--surface);
+            color: var(--text);
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s, background-color 0.2s;
-            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            letter-spacing: 0.3px;
             text-align: left;
-            animation: fadeIn 0.4s ease-out forwards;
+            opacity: 0;
+            animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transition: all 0.3s ease;
         }
 
-        .ebook-link:active {
-            transform: scale(0.98);
+        .chapter-num {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 600;
+            font-style: italic;
+            margin-right: 15px;
+            min-width: 28px;
         }
-        
-        .ebook-link:hover {
-            background-color: #1a252f;
+
+        .ebook-title {
+            flex-grow: 1;
+        }
+
+        .arrow {
+            color: var(--muted);
+            font-size: 18px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .ebook-card:hover {
+            border-color: var(--gold);
+            background: #1E1B19;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(-2px);
+        }
+
+        .ebook-card:hover .arrow {
+            transform: translateX(5px);
+            color: var(--gold);
+        }
+
+        .ebook-card:active {
+            transform: translateY(0);
+            border-color: var(--muted);
+        }
+
+        .empty, .error {
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .error span {
+            color: var(--muted);
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <div class="profile-img">BPROD</div>
-        <h1>Ressources Exclusives</h1>
-        <p class="bio">Découvrez mes stratégies et guides pratiques.</p>
-
-        <div id="menuContainer">
-            <p class="loading" id="loadingStatus">Chargement des ressources disponibles...</p>
+        <div class="logo">B.</div>
+        <h1>Bibliothèque Privée</h1>
+        <div id="menu">
+            <p class="loading" id="status">Ouverture des archives...</p>
         </div>
     </div>
 
     <script>
-        // 🚨 CONFIGURATION 🚨
-        const githubUsername = "TON_NOM_UTILISATEUR_GITHUB"; 
-        const repoName = "TON_NOM_DE_REPOSITORIE";       
+        // const CONFIG = {
+    githubUser: "incognitoresolve-alt",
+    repo: "ebook",
+    branch: "main"
+};
 
-        const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/`;
-        const cacheKey = `ebooks_${repoName}`; // Clé unique pour le cache
+        const API_URL = `https://api.github.com/repos/${CONFIG.githubUser}/${CONFIG.repo}/contents/`;
+        const CACHE_KEY = `bprod_ebooks_${CONFIG.repo}`;
+        const menu = document.getElementById('menu');
+        const status = document.getElementById('status');
 
-        const menuContainer = document.getElementById('menuContainer');
-        const loadingStatus = document.getElementById('loadingStatus');
+        const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"];
 
-        // Formater le titre (ex: "budget-maitrise.html" -> "Budget maitrise")
-        function cleanTitle(filename) {
-            let nameWithoutExtension = filename.replace('.html', '');
-            let cleanName = nameWithoutExtension.replace(/-/g, ' '); 
-            return cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-        }
+        const toRoman = (n) => ROMAN[n] || String(n + 1);
 
-        // Afficher les liens dans le DOM
-        function renderLinks(files) {
-            loadingStatus.style.display = 'none';
+        const cleanTitle = (filename) =>
+            filename
+                .replace(/\.html$/i, '')
+                .replace(/[-_]/g, ' ')
+                .replace(/^\w/, (c) => c.toUpperCase());
 
-            if (files.length === 0) {
-                menuContainer.innerHTML = "<p class='bio'>Aucun eBook n'est disponible pour le moment.</p>";
+        const createCard = (file, index) => {
+            const a = document.createElement('a');
+            a.className = 'ebook-card';
+            a.href = file.name;  // Lien relatif = même dossier
+            a.style.animationDelay = `${index * 0.12}s`;
+            a.innerHTML = `
+                <span class="chapter-num">${toRoman(index)}.</span>
+                <span class="ebook-title">${cleanTitle(file.name)}</span>
+                <span class="arrow">→</span>
+            `;
+            return a;
+        };
+
+        const render = (files) => {
+            status.style.display = 'none';
+            if (!files.length) {
+                menu.innerHTML = '<p class="empty">Les archives sont actuellement vides.</p>';
                 return;
             }
+            const frag = document.createDocumentFragment();
+            files.forEach((f, i) => frag.appendChild(createCard(f, i)));
+            menu.appendChild(frag);
+        };
 
-            files.forEach((file, index) => {
-                const link = document.createElement('a');
-                link.className = 'ebook-link';
-                link.href = `./${file.name}`; // Garantit un chemin relatif correct
-                link.textContent = "📚 " + cleanTitle(file.name);
-                // Décaler légèrement l'animation pour chaque bouton
-                link.style.animationDelay = `${index * 0.1}s`; 
-                menuContainer.appendChild(link);
-            });
-        }
+        const fetchEbooks = async () => {
+            // 1. Cache session
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) { render(JSON.parse(cached)); return; }
 
-        // Fonction principale asynchrone
-        async function fetchEbooks() {
-            // 1. Vérifier si les données sont déjà en cache dans la session en cours
-            const cachedData = sessionStorage.getItem(cacheKey);
-            if (cachedData) {
-                renderLinks(JSON.parse(cachedData));
-                return; // On arrête ici, pas besoin d'appeler l'API
-            }
-
-            // 2. Si pas de cache, on appelle l'API
             try {
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Erreur API: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                const htmlFiles = data.filter(file => file.name.endsWith('.html') && file.name !== 'index.html');
-                
-                // 3. Sauvegarder dans le cache pour les prochains allers-retours
-                sessionStorage.setItem(cacheKey, JSON.stringify(htmlFiles));
-                
-                // 4. Afficher
-                renderLinks(htmlFiles);
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
 
-            } catch (error) {
-                console.error("Erreur de chargement :", error);
-                loadingStatus.textContent = "Impossible de charger la liste des eBooks pour le moment.";
+                // Filtre : fichiers .html (hors index.html) présents à la racine
+                const ebooks = data.filter(item =>
+                    item.type === 'file' &&
+                    item.name.toLowerCase().endsWith('.html') &&
+                    item.name.toLowerCase() !== 'index.html'
+                );
+
+                sessionStorage.setItem(CACHE_KEY, JSON.stringify(ebooks));
+                render(ebooks);
+            } catch (err) {
+                console.error(err);
+                status.className = 'error';
+                status.innerHTML = `Accès aux archives indisponible.<br><span>Vérifie la configuration ou réessaie plus tard.</span>`;
             }
-        }
+        };
 
-        // Lancement du script
         fetchEbooks();
     </script>
-
 </body>
 </html>
