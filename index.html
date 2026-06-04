@@ -9,12 +9,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #12100E;
-            --surface: #1A1715;
-            --text: #EAE0D5;
-            --muted: #8A817C;
-            --gold: #C8A97E;
-            --border: #2A2522;
+            --bg: #0a0807;
+            --surface: #1c1814;
+            --text: #f0e6d8;
+            --muted: #8a7e72;
+            --gold: #c9a86c;
+            --gold-bright: #e0c490;
+            --gold-dim: #9a8255;
+            --border: #2e2720;
+            --wood-dark: #2a1d14;
+            --wood-mid: #4a3525;
+            --wood-light: #7a5c3e;
+            --leather-red: #6b2d1f;
+            --leather-brown: #5c3d2a;
+            --leather-green: #3a4a35;
+            --leather-blue: #1e3048;
+            --leather-gold: #7a5c1e;
+            --page-cream: #d4c4a8;
+            --burgundy: #4a1a1a;
+            --forest: #2a3a2a;
+            --navy: #1a2a3a;
+            --charcoal: #1e1e1e;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,55 +38,237 @@
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
-            display: flex;
-            justify-content: center;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* ═══════════════════════════════════════
+           BIBLIOTHÈQUE EN ARRIÈRE-PLAN
+        ═══════════════════════════════════════ */
+        .library-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Étagères */
+        .shelf {
+            position: absolute;
             width: 100%;
-            max-width: 500px;
-            padding: 50px 25px;
+            height: 180px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+            padding: 0 5%;
+        }
+        .shelf::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(180deg, var(--wood-mid) 0%, var(--wood-dark) 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 2px 4px rgba(122,92,62,0.3);
+        }
+        .shelf::before {
+            content: '';
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(122,92,62,0.4);
+        }
+
+        .shelf-1 { top: 0; }
+        .shelf-2 { top: 220px; }
+        .shelf-3 { top: 440px; }
+        .shelf-4 { top: 660px; }
+        .shelf-5 { top: 880px; }
+
+        /* Livres */
+        .book {
+            position: relative;
+            border-radius: 2px 2px 0 0;
+            box-shadow: 
+                inset -2px 0 4px rgba(0,0,0,0.3),
+                inset 2px 0 4px rgba(255,255,255,0.05),
+                2px 0 5px rgba(0,0,0,0.4);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+        }
+        .book::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 1px;
+        }
+        .book::after {
+            content: '';
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .book-tall { width: 22px; height: 140px; }
+        .book-med { width: 18px; height: 120px; }
+        .book-short { width: 16px; height: 100px; }
+        .book-wide { width: 28px; height: 110px; }
+        .book-thin { width: 12px; height: 130px; }
+
+        .b-red { background: linear-gradient(90deg, var(--leather-red) 0%, #8a3a2a 50%, var(--leather-red) 100%); }
+        .b-brown { background: linear-gradient(90deg, var(--leather-brown) 0%, #6b4a35 50%, var(--leather-brown) 100%); }
+        .b-green { background: linear-gradient(90deg, var(--leather-green) 0%, #4a5a45 50%, var(--leather-green) 100%); }
+        .b-blue { background: linear-gradient(90deg, var(--leather-blue) 0%, #2d4058 50%, var(--leather-blue) 100%); }
+        .b-gold { background: linear-gradient(90deg, var(--leather-gold) 0%, #9a7c2e 50%, var(--leather-gold) 100%); }
+        .b-cream { background: linear-gradient(90deg, #b4a48a 0%, var(--page-cream) 50%, #b4a48a 100%); }
+        .b-dark { background: linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%); }
+        .b-burgundy { background: linear-gradient(90deg, var(--burgundy) 0%, #5a2a2a 50%, var(--burgundy) 100%); }
+        .b-forest { background: linear-gradient(90deg, var(--forest) 0%, #3a4a3a 50%, var(--forest) 100%); }
+        .b-navy { background: linear-gradient(90deg, var(--navy) 0%, #2a3a4a 50%, var(--navy) 100%); }
+
+        .book-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            font-family: 'Playfair Display', serif;
+            font-size: 7px;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+        .book-cream .book-title { color: rgba(60,40,20,0.5); }
+
+        .book-ornament {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            border: 1px solid rgba(201,168,108,0.4);
+            border-radius: 50%;
+        }
+        .book-band {
+            position: absolute;
+            top: 30%;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(180deg, rgba(201,168,108,0.3) 0%, rgba(201,168,108,0.1) 100%);
+        }
+
+        .library-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(201,168,108,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 80%, rgba(122,92,62,0.04) 0%, transparent 40%),
+                linear-gradient(180deg, rgba(10,8,7,0.2) 0%, rgba(10,8,7,0.75) 100%);
+        }
+
+        /* ═══════════════════════════════════════
+           CONTENU PRINCIPAL
+        ═══════════════════════════════════════ */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 60px 25px 80px;
             text-align: center;
         }
 
         .logo {
-            width: 90px; height: 90px;
+            width: 100px; height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--surface), var(--bg));
-            border: 1px solid var(--border);
-            margin: 0 auto 30px;
+            background: linear-gradient(135deg, rgba(28,24,20,0.9), rgba(10,8,7,0.95));
+            border: 1px solid rgba(201,168,108,0.3);
+            margin: 0 auto 35px;
             display: flex; align-items: center; justify-content: center;
             font-family: 'Playfair Display', serif;
-            font-size: 20px; font-weight: 600;
+            font-size: 24px; font-weight: 600;
             color: var(--gold);
-            letter-spacing: 2px;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+            box-shadow: 
+                0 0 40px rgba(201,168,108,0.08),
+                inset 0 4px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 28px; font-weight: 400;
-            letter-spacing: 0.5px;
+            font-size: 32px; font-weight: 400;
+            letter-spacing: 1px;
+            color: var(--text);
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 300;
+            color: var(--muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
             margin-bottom: 50px;
+        }
+
+        .divider-ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 50px;
+        }
+        .divider-ornament .line {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+        }
+        .divider-ornament .diamond {
+            width: 6px;
+            height: 6px;
+            border: 1px solid var(--gold-dim);
+            transform: rotate(45deg);
         }
 
         .loading {
             font-family: 'Playfair Display', serif;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--gold);
             font-style: italic;
-            animation: pulse 2s infinite;
+            animation: pulse 2.5s infinite ease-in-out;
+            letter-spacing: 1px;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
+            0%, 100% { opacity: 0.4; }
             50% { opacity: 1; }
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -80,55 +277,78 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            padding: 20px 25px;
-            margin-bottom: 16px;
-            background: var(--surface);
+            padding: 22px 28px;
+            margin-bottom: 14px;
+            background: rgba(28,24,20,0.85);
+            backdrop-filter: blur(12px);
             color: var(--text);
             text-decoration: none;
-            border-radius: 4px;
-            border: 1px solid var(--border);
+            border-radius: 6px;
+            border: 1px solid rgba(201,168,108,0.12);
             font-size: 15px;
             letter-spacing: 0.3px;
             text-align: left;
             opacity: 0;
-            animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            transition: all 0.3s ease;
+            animation: fadeUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ebook-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .chapter-num {
             font-family: 'Playfair Display', serif;
             color: var(--gold);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             font-style: italic;
-            margin-right: 15px;
-            min-width: 28px;
+            margin-right: 18px;
+            min-width: 32px;
+            opacity: 0.8;
         }
 
         .ebook-title {
             flex-grow: 1;
+            font-weight: 400;
         }
 
         .arrow {
             color: var(--muted);
-            font-size: 18px;
-            transition: transform 0.3s ease, color 0.3s ease;
+            font-size: 16px;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s ease;
         }
 
         .ebook-card:hover {
-            border-color: var(--gold);
-            background: #1E1B19;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateY(-2px);
+            border-color: rgba(201,168,108,0.35);
+            background: rgba(30,26,22,0.95);
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.5),
+                0 0 60px rgba(201,168,108,0.05);
+            transform: translateY(-3px) scale(1.01);
+        }
+
+        .ebook-card:hover::before {
+            opacity: 1;
         }
 
         .ebook-card:hover .arrow {
-            transform: translateX(5px);
+            transform: translateX(8px);
             color: var(--gold);
         }
 
         .ebook-card:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(0.99);
             border-color: var(--muted);
         }
 
@@ -143,23 +363,226 @@
             color: var(--muted);
             font-size: 12px;
         }
+
+        /* ═══════════════════════════════════════
+           FOOTER - By Boris AKOE
+           Optimisé pour lisibilité sur fond sombre
+        ═══════════════════════════════════════ */
+        .footer {
+            margin-top: 70px;
+            padding: 28px 24px;
+            background: rgba(16, 13, 11, 0.92);
+            backdrop-filter: blur(16px) saturate(1.2);
+            border: 1px solid rgba(201, 168, 108, 0.15);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            border-radius: 1px;
+        }
+
+        .footer-author {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--gold-bright);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 8px rgba(201, 168, 108, 0.15);
+        }
+
+        .footer-role {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text);
+            letter-spacing: 1.5px;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .footer-role .sep {
+            color: var(--gold-dim);
+            margin: 0 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 40px 20px 60px; }
+            h1 { font-size: 26px; }
+            .footer { padding: 22px 18px; }
+            .footer-author { font-size: 16px; }
+            .footer-role { font-size: 11px; letter-spacing: 1px; }
+            .shelf { height: 140px; }
+            .book-tall { height: 110px; }
+            .book-med { height: 95px; }
+            .book-short { height: 80px; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- BIBLIOTHÈQUE EN ARRIÈRE-PLAN -->
+    <div class="library-bg">
+        <div class="shelf shelf-1">
+            <div class="book book-tall b-red"><div class="book-title">Mémoires</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-brown"><div class="book-title">Essais</div></div>
+            <div class="book book-short b-green"><div class="book-title">Poésie</div></div>
+            <div class="book book-tall b-blue"><div class="book-title">Histoire</div><div class="book-band"></div></div>
+            <div class="book book-thin b-gold"><div class="book-title">Or</div></div>
+            <div class="book book-wide b-cream book-cream"><div class="book-title">Lettres</div></div>
+            <div class="book book-med b-dark"><div class="book-title">Nuit</div></div>
+            <div class="book book-tall b-burgundy"><div class="book-title">Passion</div><div class="book-ornament"></div></div>
+            <div class="book book-short b-forest"><div class="book-title">Forêt</div></div>
+            <div class="book book-med b-navy"><div class="book-title">Mer</div></div>
+            <div class="book book-tall b-red"><div class="book-title">Flamme</div></div>
+            <div class="book book-thin b-brown"><div class="book-title">Terre</div></div>
+            <div class="book book-wide b-green"><div class="book-title">Jardin</div><div class="book-band"></div></div>
+            <div class="book book-med b-gold"><div class="book-title">Richesse</div></div>
+            <div class="book book-short b-cream book-cream"><div class="book-title">Lumière</div></div>
+            <div class="book book-tall b-blue"><div class="book-title">Étoile</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-dark"><div class="book-title">Secret</div></div>
+            <div class="book book-thin b-burgundy"><div class="book-title">Amour</div></div>
+            <div class="book book-wide b-forest"><div class="book-title">Nature</div></div>
+            <div class="book book-med b-navy"><div class="book-title">Voyage</div></div>
+        </div>
+
+        <div class="shelf shelf-2">
+            <div class="book book-med b-navy"><div class="book-title">Horizon</div></div>
+            <div class="book book-tall b-forest"><div class="book-title">Sagesse</div><div class="book-ornament"></div></div>
+            <div class="book book-short b-burgundy"><div class="book-title">Rêve</div></div>
+            <div class="book book-wide b-gold"><div class="book-title">Fortune</div><div class="book-band"></div></div>
+            <div class="book book-thin b-cream book-cream"><div class="book-title">Paix</div></div>
+            <div class="book book-tall b-red"><div class="book-title">Guerre</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-brown"><div class="book-title">Temps</div></div>
+            <div class="book book-short b-blue"><div class="book-title">Ciel</div></div>
+            <div class="book book-tall b-dark"><div class="book-title">Ombre</div><div class="book-band"></div></div>
+            <div class="book book-med b-green"><div class="book-title">Vie</div></div>
+            <div class="book book-thin b-red"><div class="book-title">Feu</div></div>
+            <div class="book book-wide b-navy"><div class="book-title">Profondeur</div></div>
+            <div class="book book-tall b-cream book-cream"><div class="book-title">Aube</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-forest"><div class="book-title">Racine</div></div>
+            <div class="book book-short b-gold"><div class="book-title">Joyau</div></div>
+            <div class="book book-tall b-burgundy"><div class="book-title">Cœur</div><div class="book-band"></div></div>
+            <div class="book book-med b-brown"><div class="book-title">Poussière</div></div>
+            <div class="book book-thin b-blue"><div class="book-title">Glace</div></div>
+            <div class="book book-wide b-dark"><div class="book-title">Silence</div></div>
+            <div class="book book-med b-red"><div class="book-title">Foi</div></div>
+        </div>
+
+        <div class="shelf shelf-3">
+            <div class="book book-tall b-gold"><div class="book-title">Trésor</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-cream book-cream"><div class="book-title">Parchemin</div></div>
+            <div class="book book-short b-navy"><div class="book-title">Carte</div></div>
+            <div class="book book-wide b-forest"><div class="book-title">Arbre</div><div class="book-band"></div></div>
+            <div class="book book-thin b-burgundy"><div class="book-title">Sang</div></div>
+            <div class="book book-tall b-brown"><div class="book-title">Héritage</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-red"><div class="book-title">Fureur</div></div>
+            <div class="book book-short b-dark"><div class="book-title">Mystère</div></div>
+            <div class="book book-tall b-blue"><div class="book-title">Océan</div><div class="book-band"></div></div>
+            <div class="book book-med b-green"><div class="book-title">Source</div></div>
+            <div class="book book-thin b-gold"><div class="book-title">Couronne</div></div>
+            <div class="book book-wide b-cream book-cream"><div class="book-title">Vérité</div></div>
+            <div class="book book-tall b-navy"><div class="book-title">Destin</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-forest"><div class="book-title">Harmonie</div></div>
+            <div class="book book-short b-burgundy"><div class="book-title">Douleur</div></div>
+            <div class="book book-tall b-brown"><div class="book-title">Patience</div><div class="book-band"></div></div>
+            <div class="book book-med b-red"><div class="book-title">Colère</div></div>
+            <div class="book book-thin b-blue"><div class="book-title">Froid</div></div>
+            <div class="book book-wide b-dark"><div class="book-title">Néant</div></div>
+            <div class="book book-med b-green"><div class="book-title">Espoir</div></div>
+        </div>
+
+        <div class="shelf shelf-4">
+            <div class="book book-med b-blue"><div class="book-title">Vent</div></div>
+            <div class="book book-tall b-dark"><div class="book-title">Éclipse</div><div class="book-ornament"></div></div>
+            <div class="book book-short b-gold"><div class="book-title">Perle</div></div>
+            <div class="book book-wide b-red"><div class="book-title">Flamme</div><div class="book-band"></div></div>
+            <div class="book book-thin b-cream book-cream"><div class="book-title">Calme</div></div>
+            <div class="book book-tall b-navy"><div class="book-title">Abyss</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-forest"><div class="book-title">Feuille</div></div>
+            <div class="book book-short b-brown"><div class="book-title">Graine</div></div>
+            <div class="book book-tall b-burgundy"><div class="book-title">Rouge</div><div class="book-band"></div></div>
+            <div class="book book-med b-green"><div class="book-title">Vert</div></div>
+            <div class="book book-thin b-blue"><div class="book-title">Bleu</div></div>
+            <div class="book book-wide b-dark"><div class="book-title">Noir</div></div>
+            <div class="book book-tall b-gold"><div class="book-title">Or</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-cream book-cream"><div class="book-title">Blanc</div></div>
+            <div class="book book-short b-navy"><div class="book-title">Indigo</div></div>
+            <div class="book book-tall b-red"><div class="book-title">Cramoisi</div><div class="book-band"></div></div>
+            <div class="book book-med b-brown"><div class="book-title">Brun</div></div>
+            <div class="book book-thin b-forest"><div class="book-title">Mousse</div></div>
+            <div class="book book-wide b-burgundy"><div class="book-title">Pourpre</div></div>
+            <div class="book book-med b-blue"><div class="book-title">Azur</div></div>
+        </div>
+
+        <div class="shelf shelf-5">
+            <div class="book book-tall b-cream book-cream"><div class="book-title">Papyrus</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-navy"><div class="book-title">Quartz</div></div>
+            <div class="book book-short b-gold"><div class="book-title">Rubis</div></div>
+            <div class="book book-wide b-forest"><div class="book-title">Émeraude</div><div class="book-band"></div></div>
+            <div class="book book-thin b-burgundy"><div class="book-title">Grenat</div></div>
+            <div class="book book-tall b-brown"><div class="book-title">Cèdre</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-red"><div class="book-title">Santal</div></div>
+            <div class="book book-short b-dark"><div class="book-title">Ébène</div></div>
+            <div class="book book-tall b-blue"><div class="book-title">Saphir</div><div class="book-band"></div></div>
+            <div class="book book-med b-green"><div class="book-title">Jade</div></div>
+            <div class="book book-thin b-cream book-cream"><div class="book-title">Ivoire</div></div>
+            <div class="book book-wide b-gold"><div class="book-title">Ambre</div></div>
+            <div class="book book-tall b-navy"><div class="book-title">Onyx</div><div class="book-ornament"></div></div>
+            <div class="book book-med b-forest"><div class="book-title">Agate</div></div>
+            <div class="book book-short b-burgundy"><div class="book-title">Opale</div></div>
+            <div class="book book-tall b-brown"><div class="book-title">Chêne</div><div class="book-band"></div></div>
+            <div class="book book-med b-red"><div class="book-title">Acajou</div></div>
+            <div class="book book-thin b-blue"><div class="book-title">Cobalt</div></div>
+            <div class="book book-wide b-dark"><div class="book-title">Charbon</div></div>
+            <div class="book book-med b-green"><div class="book-title">Olive</div></div>
+        </div>
+    </div>
+
+    <div class="library-overlay"></div>
+
+    <!-- CONTENU -->
     <div class="container">
         <div class="logo">B.</div>
         <h1>Bibliothèque Privée</h1>
+        <p class="subtitle">Collection exclusive</p>
+
+        <div class="divider-ornament">
+            <div class="line"></div>
+            <div class="diamond"></div>
+            <div class="line"></div>
+        </div>
+
         <div id="menu">
             <p class="loading" id="status">Ouverture des archives...</p>
+        </div>
+
+        <div class="footer">
+            <p class="footer-author">By Boris AKOE</p>
+            <p class="footer-role">Conseiller Financier<span class="sep">·</span>Créateur de contenu<span class="sep">·</span>Écrivain</p>
         </div>
     </div>
 
     <script>
-    const CONFIG = {
-     githubUser: "incognitoresolve-alt",
-     repo: "Ebook",
-     branch: "main"
-};
+        const CONFIG = {
+            githubUser: "TON_NOM_UTILISATEUR_GITHUB",
+            repo: "TON_NOM_DE_REPO",
+            branch: "main"
+        };
 
         const API_URL = `https://api.github.com/repos/${CONFIG.githubUser}/${CONFIG.repo}/contents/`;
         const CACHE_KEY = `bprod_ebooks_${CONFIG.repo}`;
@@ -167,7 +590,6 @@
         const status = document.getElementById('status');
 
         const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"];
-
         const toRoman = (n) => ROMAN[n] || String(n + 1);
 
         const cleanTitle = (filename) =>
@@ -179,8 +601,8 @@
         const createCard = (file, index) => {
             const a = document.createElement('a');
             a.className = 'ebook-card';
-            a.href = file.name;  // Lien relatif = même dossier
-            a.style.animationDelay = `${index * 0.12}s`;
+            a.href = file.name;
+            a.style.animationDelay = `${index * 0.15}s`;
             a.innerHTML = `
                 <span class="chapter-num">${toRoman(index)}.</span>
                 <span class="ebook-title">${cleanTitle(file.name)}</span>
@@ -201,7 +623,6 @@
         };
 
         const fetchEbooks = async () => {
-            // 1. Cache session
             const cached = sessionStorage.getItem(CACHE_KEY);
             if (cached) { render(JSON.parse(cached)); return; }
 
@@ -209,14 +630,11 @@
                 const res = await fetch(API_URL);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
-
-                // Filtre : fichiers .html (hors index.html) présents à la racine
                 const ebooks = data.filter(item =>
                     item.type === 'file' &&
                     item.name.toLowerCase().endsWith('.html') &&
                     item.name.toLowerCase() !== 'index.html'
                 );
-
                 sessionStorage.setItem(CACHE_KEY, JSON.stringify(ebooks));
                 render(ebooks);
             } catch (err) {
@@ -228,5 +646,6 @@
 
         fetchEbooks();
     </script>
+
 </body>
 </html>
